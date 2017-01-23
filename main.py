@@ -10,6 +10,16 @@ from moviepy.editor import VideoFileClip
 from IPython.display import HTML
 
 def get_calibration_param(image_url):
+    """Compute camera calibration matrix and distortion coefficients given a set of chessboard images
+    
+        Args:
+            image_url (str): path for images for calibration
+            
+        Returns:
+            mtx (numpy array): camera matrix (3-dimensional array)
+            dist (numpy array): distortion coefficients (1- 5 dimensional array)
+         
+    """
     images = glob.glob(image_url)
 
     objp = np.zeros((6*9,3), np.float32)
@@ -34,10 +44,21 @@ def get_calibration_param(image_url):
     return mtx, dist
 
 def get_undistortion(distorted_img, mtx, dist):
+    """Undistort distorted images
+        
+        Args:
+            distorted_img (array): distorted image
+            mtx (array): camera matrix
+            dist (array): distortion coefficients
+           
+        Returns:
+            undist (array): undistorted image
+    """
     undist = cv2.undistort(distorted_img, mtx, dist, None, mtx)
     return undist
 
 def input_calibration_file(path="./calibration.npz"):
+    """get camera matrix and distorsion coefficients from file"""
     try:
         calibration_param = np.load(path)
         return calibration_param['mtx'], calibration_param['dist']
@@ -53,12 +74,24 @@ class Perspective_Transform():
         self.inverse_M = cv2.getPerspectiveTransform(self.dst, self.src)
         
     def transform(self, undist):
+        """get transformed image"""
         return cv2.warpPerspective(undist, self.M, (undist.shape[1], undist.shape[0]))
     
     def inv_transform(self, undist):
+        """get original view's image"""
         return cv2.warpPerspective(undist, self.inverse_M, (undist.shape[1], undist.shape[0]))
     
-def get_s_binary(undist_img, thres=(110, 255)): #110
+def get_s_binary(undist_img, thres=(110, 255)):
+    """Get S binary image from H and S of HLS.
+        And apply gaussian blur for taking away noise
+        
+        Args:
+            undist_img (array): RGB Undistorted Image (x, y, 3)
+            thres (tuple): threshold for S colorspace
+            
+        Returns:
+            s_binary (array): S binary Image (x, y, 1)
+    """
     hls = cv2.cvtColor(undist_img, cv2.COLOR_RGB2HLS)
     h = hls[:, :, 0]
     s = hls[:, :, 2]
@@ -72,15 +105,22 @@ def gaussian_blur(img, kernel_size):
     return cv2.GaussianBlur(img, (kernel_size, kernel_size), 0)
 
 def adjust_gamma(image, gamma=1.0):
-    # build a lookup table mapping the pixel values [0, 255] to
-    # their adjusted gamma values
+    """Apply gamma conversion to RGB Image.
+        
+        Args:
+            image: RGB Image
+            gamma: rate for gamma conversion
+            
+        Returns:
+           image: converted RGB Image
+    """
     invGamma = 1.0 / gamma
     table = np.array([((i / 255.0) ** invGamma) * 255
         for i in np.arange(0, 256)]).astype("uint8")
-    # apply gamma correction using the lookup table
     return cv2.LUT(image, table)
 
-def dir_threshold(img_ch, sobel_kernel=3, thresh=(0, np.pi/2)):    
+def dir_threshold(img_ch, sobel_kernel=3, thresh=(0, np.pi/2)):
+    """direct thresholding for 'get_slope' method"""
     sobelx = np.absolute(cv2.Sobel(img_ch, cv2.CV_64F, 1, 0, ksize=sobel_kernel))
     sobely = np.absolute(cv2.Sobel(img_ch, cv2.CV_64F, 0, 1, ksize=sobel_kernel))
     abs_grad_dir = np.absolute(np.arctan(sobely/sobelx))
@@ -90,6 +130,7 @@ def dir_threshold(img_ch, sobel_kernel=3, thresh=(0, np.pi/2)):
     return dir_binary
 
 def get_slope(undist_img, orient='x', sobel_kernel=3, thres = (0, 255)):
+    """"""
     undist_img = adjust_gamma(undist_img, 0.2)
     gray = cv2.cvtColor(undist_img, cv2.COLOR_RGB2GRAY)
     if orient == 'x':
@@ -301,13 +342,10 @@ class Line_detector(object):
             cv2.putText(image, 'Vehicle is {:.2f}m right of center'.format(diff_center), (100,80),
                  fontFace = 16, fontScale = 2, color=(255,255,255), thickness = 2)
         return image
-
-    def process_image(self, distorted_image):
-        undist_img = get_undistortion(distorted_image, self.camera_mtx, self.dist_coeff)
-        bird_view = self.bird_view_transformer.transform(undist_img)            
-        converted_img = color_slope_thres_conversion(bird_view)    
+    
+    def select_bestx_and_fit(self, image):
         if self.detected:
-            final_bird_view_img = self.get_filtered_img_and_cal_poly(converted_img, width=50)
+            final_bird_view_img = self.get_filtered_img_and_cal_poly(image, width=50)
             if self.check_line():
                 self.cal_bestx_and_fit()
             else:
@@ -316,7 +354,8 @@ class Line_detector(object):
                     self.detected = None
                     self.count = 0
         else:
-            final_bird_view_img, left_line, right_line, left_line_equation, right_line_equation = histogram_thresholding(converted_img, xsteps=20, ysteps=25, window_width=15)
+            final_bird_view_img, left_line, right_line, left_line_equation, right_line_equation = \
+                histogram_thresholding(image, xsteps=20, ysteps=25, window_width=15)
             self.left_line.current_fit = left_line_equation
             self.right_line.current_fit = right_line_equation
             
@@ -328,7 +367,13 @@ class Line_detector(object):
                 self.right_line.bestx = right_line
                 self.right_line.best_fit = right_line_equation
                 self.detected = True
-                        
+        return final_bird_view_img
+
+    def process_image(self, distorted_image):
+        undist_img = get_undistortion(distorted_image, self.camera_mtx, self.dist_coeff)
+        bird_view = self.bird_view_transformer.transform(undist_img)            
+        converted_img = color_slope_thres_conversion(bird_view)    
+        final_bird_view_img = self.select_bestx_and_fit(converted_img)
         final_bird_view_img = self.mask_image_by_lines(final_bird_view_img)
         new_image = self.bird_view_transformer.inv_transform(final_bird_view_img)
         undist_img = add_lines_to_image(undist_img, new_image)
