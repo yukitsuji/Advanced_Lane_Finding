@@ -12,6 +12,10 @@ The goals / steps of this algolithms are the following:
 * Warp the detected lane boundaries back onto the original image.
 * Output visual display of the lane boundaries and numerical estimation of lane curvature and vehicle position.
 
+## Movie
+[![ScreenShot](http://img.youtube.com/vi/f9wI35tasjw/0.jpg)](https://www.youtube.com/watch?v=f9wI35tasjw)
+
+<!-- 
 [//]: # (Image References)
 
 [image1]: ./examples/undistort_output.png "Undistorted"
@@ -106,3 +110,5 @@ Here's a [link to my video result](./project_video.mp4)
 ####1. Briefly discuss any problems / issues you faced in your implementation of this project.  Where will your pipeline likely fail?  What could you do to make it more robust?
 
 Here I'll talk about the approach I took, what techniques I used, what worked and why, where the pipeline might fail and how I might improve it if I were going to pursue this project further.  
+
+-->
