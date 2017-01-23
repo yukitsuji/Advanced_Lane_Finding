@@ -1,5 +1,5 @@
 # Advanced_Lane_Finding
-Curved Lane Detection by computer vision techniques such as perspective transform or image thresholding.
+###Curved Lane Detection by computer vision techniques such as perspective transform or image thresholding.
 
 ##Writeup Template
 ###You can use this file as a template for your writeup if you want to submit it as a markdown file, but feel free to use some other method and submit a pdf if you prefer.
