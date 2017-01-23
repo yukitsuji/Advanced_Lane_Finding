@@ -1,19 +1,12 @@
-# Advanced_Lane_Finding
-####Curved Lane Detection by computer vision techniques such as perspective transform or image thresholding.
+# Advanced Lane Finding
+###Curved Lane Detection by using computer vision techniques such as perspective transform or image thresholding.
 
-##Writeup Template
-###You can use this file as a template for your writeup if you want to submit it as a markdown file, but feel free to use some other method and submit a pdf if you prefer.
-
----
-
-**Advanced Lane Finding Project**
-
-The goals / steps of this project are the following:
+The goals / steps of this algolithms are the following:
 
 * Compute the camera calibration matrix and distortion coefficients given a set of chessboard images.
 * Apply a distortion correction to raw images.
-* Use color transforms, gradients, etc., to create a thresholded binary image.
 * Apply a perspective transform to rectify binary image ("birds-eye view").
+* Use color transforms, gradients, etc., to create a thresholded binary image.
 * Detect lane pixels and fit to find the lane boundary.
 * Determine the curvature of the lane and vehicle position with respect to center.
 * Warp the detected lane boundaries back onto the original image.
