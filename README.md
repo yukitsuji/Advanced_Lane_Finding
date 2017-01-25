@@ -23,8 +23,6 @@ The goals / steps of this algolithms are the following:
 [image4]: ./output_images/thresholding.jpg "Thresholding"
 [image5]: ./output_images/histogram_filtering.jpg "Fit Visual"
 [image6]: ./output_images/result.jpg "Output"
-[video1]: ./project_video.mp4 "Video"
-
 
 ### Camera Calibration
 
@@ -35,7 +33,6 @@ The code for this step is contained in the first code cell of the IPython notebo
 I start by preparing "object points", which will be the (x, y, z) coordinates of the chessboard corners in the world. Here I am assuming the chessboard is fixed on the (x, y) plane at z=0, such that the object points are the same for each calibration image.  Thus, `objp` is just a replicated array of coordinates, and `objpoints` will be appended with a copy of it every time I successfully detect all chessboard corners in a test image.  `imgpoints` will be appended with the (x, y) pixel position of each of the corners in the image plane with each successful chessboard detection.  
 
 I then used the output `objpoints` and `imgpoints` to compute the camera calibration and distortion coefficients using the `cv2.calibrateCamera()` function.  I applied this distortion correction to the test image using the `cv2.undistort()` function and obtained this result:
-
 ![alt text][image1]
 
 ###Pipeline (single images)
@@ -76,8 +73,7 @@ And you can see example of thresholding 16 and 17rd code cell in `Advanced_Lane_
 
 - Gradient Thresholding could get the white line. But, have tendency to including some noise. So I apply gaussian blur.
 
- Here's an example of my output for this step.
-
+Here's an example of my output for this step.
 ![alt text][image4]
 
 #### 4. How to identify lane-line pixels and fit their positions with a polynomial.
@@ -113,4 +109,4 @@ I implemented all pipeline in `main.py`. Main method is `process_image` in line 
 
 For binary thresholding, I used a combination of color and gradient thresholds. But, a gradient thresholding has high rate of failures when there are objects like line in image. So if you need more robust algorithms, please use only color thresholding. And if there are cars in front of cameras, probably you couldn't recognize lane lines correctly.
 
-And for more improving histogram filtering, under image (ex: ), the range of searching could 狭くできる.  
+And for more improving histogram filtering, by considering that starting point of line would be limited (about 100-300 for left line), the range of searching could be narrow.  
