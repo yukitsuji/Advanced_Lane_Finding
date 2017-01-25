@@ -17,8 +17,8 @@ The goals / steps of this algolithms are the following:
 
 [//]: # (Image References)
 
-[image1]: ./output_images/calibration.jpg "Undistorted"
-[image2]: ./test_images/test1.jpg "Road Transformed"
+[image1]: ./output_images/calibration2.jpg "Undistorted"
+[image2]: ./output_images/calibration1.jpg "Road Transformed"
 [image3]: ./examples/binary_combo_example.jpg "Binary Example"
 [image4]: ./examples/warped_straight_lines.jpg "Warp Example"
 [image5]: ./examples/color_fit_lines.jpg "Fit Visual"
