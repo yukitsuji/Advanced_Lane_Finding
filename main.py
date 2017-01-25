@@ -65,21 +65,6 @@ def input_calibration_file(path="./calibration.npz"):
     except IOError as e:
         print(e)
         raise IOError("Please Set Correct Calibration File")
-
-class Perspective_Transform():
-    def __init__(self, src, dst):
-        self.src = src
-        self.dst = dst
-        self.M = cv2.getPerspectiveTransform(self.src, self.dst)
-        self.inverse_M = cv2.getPerspectiveTransform(self.dst, self.src)
-        
-    def transform(self, undist):
-        """get transformed image"""
-        return cv2.warpPerspective(undist, self.M, (undist.shape[1], undist.shape[0]))
-    
-    def inv_transform(self, undist):
-        """get original view's image"""
-        return cv2.warpPerspective(undist, self.inverse_M, (undist.shape[1], undist.shape[0]))
     
 def get_s_binary(undist_img, thres=(110, 255)):
     """Get S binary image from H and S of HLS.
@@ -216,6 +201,23 @@ def add_lines_to_image(undist_img, new_image):
     cv2.fillConvexPoly(undist_img, pt, (255, 93, 74))
     undist_img[new_image==1] = [255, 0, 0]
     return undist_img
+
+
+class Perspective_Transform():
+    def __init__(self, src, dst):
+        self.src = src
+        self.dst = dst
+        self.M = cv2.getPerspectiveTransform(self.src, self.dst)
+        self.inverse_M = cv2.getPerspectiveTransform(self.dst, self.src)
+        
+    def transform(self, undist):
+        """get transformed image"""
+        return cv2.warpPerspective(undist, self.M, (undist.shape[1], undist.shape[0]))
+    
+    def inv_transform(self, undist):
+        """get original view's image"""
+        return cv2.warpPerspective(undist, self.inverse_M, (undist.shape[1], undist.shape[0]))
+    
 
 class Line(object):
     def __init__(self):
