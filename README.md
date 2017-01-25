@@ -35,14 +35,14 @@ I start by preparing "object points", which will be the (x, y, z) coordinates of
 I then used the output `objpoints` and `imgpoints` to compute the camera calibration and distortion coefficients using the `cv2.calibrateCamera()` function.  I applied this distortion correction to the test image using the `cv2.undistort()` function and obtained this result:
 ![alt text][image1]
 
-###Pipeline (single images)
+##Pipeline (single images)
 
-#### 1. Provide an example of a distortion-corrected image.
+### 1. Provide an example of a distortion-corrected image.
 To demonstrate this step, I will describe how I apply the distortion correction to one of the test images like this one:
 ![alt text][image2]
 
 
-#### 2. How to perform a perspective transform.
+### 2. How to perform a perspective transform.
 
 The code for my perspective transform includes a class called `Perspective_Transform`, which appears in lines 206 in the file `main.py` (in the 6rd code cell of the IPython notebook).  The `Perspective_Transform.transform()` function takes as inputs an image (`img`), as well as source (`src`) and destination (`dst`) points.  I chose the hardcode the source and destination points in the following manner:
 
@@ -65,7 +65,7 @@ This resulted in the following source and destination points:
 
 ![alt text][image3]
 
-#### 3. How to use color transforms, gradients or other methods to create a thresholded binary image.
+### 3. How to use color transforms, gradients or other methods to create a thresholded binary image.
 I used a combination of color and gradient thresholds to generate a binary image (thresholding steps at lines from 69 to 146 in `main.py`).
 And you can see example of thresholding 16 and 17rd code cell in `Advanced_Lane_Finding.ipynb`
 
@@ -76,7 +76,7 @@ And you can see example of thresholding 16 and 17rd code cell in `Advanced_Lane_
 Here's an example of my output for this step.
 ![alt text][image4]
 
-#### 4. How to identify lane-line pixels and fit their positions with a polynomial.
+### 4. How to identify lane-line pixels and fit their positions with a polynomial.
 - Identify peaks in a histogram of the image to determine location of lane lines.  
 - mask images by peaks you get.
 - Fitting a polynomial to each lane using the `cal_poly` method in lines 273 in `main.py`.
@@ -89,7 +89,7 @@ For determining if detected lines are the real things, we check lines
 
 ![alt text][image5]
 
-#### 5. How to calculate the radius of curvature of the lane and the position of the vehicle with respect to center.
+### 5. How to calculate the radius of curvature of the lane and the position of the vehicle with respect to center.
 
 - I calculate curvature by using `__cal_curvature` method in lines 312 through 322 in `main.py`.   
 Calculate the average of the x intercepts from each of the two polynomials position = *(rightx_int+leftx_int)/2*
@@ -100,7 +100,7 @@ Calculated the distance from center by taking the absolute value of the vehicle 
 **Note**  
 The distance from center was converted from pixels to meters by multiplying the number of pixels by 3.7/700.
 
-#### 6. Provide an example image of result
+### 6. Provide an example image of result
 
 I implemented all pipeline in `main.py`. Main method is `process_image` in line 363 in `Line_detector` class. Here is an example of my result in movie:
 
@@ -108,9 +108,9 @@ I implemented all pipeline in `main.py`. Main method is `process_image` in line 
 
 ---
 
-###Discussion
+## Discussion
 
-####1. Discuss any problems / issues I faced in your implementation of this project.
+### 1. Discuss any problems / issues I faced in your implementation of this project.
 
 For binary thresholding, I used a combination of color and gradient thresholds. But, a gradient thresholding has high rate of failures when there are objects like line in image. So if you need more robust algorithms, please use only color thresholding. And if there are cars in front of cameras, probably you couldn't recognize lane lines correctly.
 
