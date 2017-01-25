@@ -208,14 +208,6 @@ def cal_poly(img, left_boundary, right_boundary):
         return fit_line, fit_equation
     else:
         return 0, np.array([10000., 100., 100.])
-    
-def mask_image_by_lines(image, left_lines, right_lines, yvals):
-    new_image = np.zeros_like(image)
-    for yv, ll in zip(yvals, left_lines):
-        new_image[yv, ll-10:ll+10] = 1
-    for yv, rl in zip(yvals, right_lines):
-        new_image[yv, rl-10 : rl+10] = 1
-    return new_image
 
 def add_lines_to_image(undist_img, new_image):
     index = np.where(new_image == 1)
@@ -235,9 +227,6 @@ class Line(object):
         self.current_x = None
         self.radius_of_curvature = None
         self.line_base_pos = None
-        self.diffs = np.array([0, 0, 0], dtype="float")
-        self.allx = None
-        self.ally = None
     
 class Line_detector(object):
     def __init__(self, calibration_path="./calibration.npz"):
