@@ -78,9 +78,14 @@ Here's an example of my output for this step.
 
 #### 4. How to identify lane-line pixels and fit their positions with a polynomial.
 - Identify peaks in a histogram of the image to determine location of lane lines.  
-- mask images by peaks you get
-- Fitting a polynomial to each lane using the `cal_poly` method in lines 273 in `main.py`
+- mask images by peaks you get.
+- Fitting a polynomial to each lane using the `cal_poly` method in lines 273 in `main.py`.
+Once you've found lane lines in one frame of video, and they are acutually the lines we are looking for, We can simply search within a window around the previous detection from next frame of video.  
+- Search for the new line within +- 30 pixel around old line center.
 
+For determining if detected lines are the real things, we check lines
+- Checking that left and right lines are roughly parallel.
+- Cheking that the difference between previous and current lines curvature are little. 
 
 ![alt text][image5]
 
