@@ -65,7 +65,7 @@ This resulted in the following source and destination points:
 
 ![alt text][image3]
 
-### 3. How to use color transforms, gradients or other methods to create a thresholded binary image.
+### 3. How to use color transforms, gradients to create a thresholded binary image.
 I used a combination of color and gradient thresholds to generate a binary image (thresholding steps at lines from 69 to 146 in `main.py`).
 And you can see example of thresholding 16 and 17rd code cell in `Advanced_Lane_Finding.ipynb`
 
